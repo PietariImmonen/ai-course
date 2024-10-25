@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useCourseStore } from "@/src/stores/course-store";
-import { ISection } from "@/src/types/Section";
-import { IPage } from "@/src/types/Page";
-import { Button } from "@/src/components/ui/button";
+import QuestionPage from "@/src/components/pages/question/question-page";
+import TheoryPage from "@/src/components/pages/theory/theory-page";
+import ButtonNavigation from "@/src/components/pages/page-navigation/button-navigation";
 
 const Page = () => {
   const { id } = useParams();
@@ -15,7 +15,7 @@ const Page = () => {
     setCurrentCourse,
     fetchSectionsAndPages,
   } = useCourseStore();
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentPageIndex, setCurrentPageIndex] = useState(0);
 
   useEffect(() => {
     const fetchCourseData = async () => {
@@ -24,7 +24,6 @@ const Page = () => {
         await fetchSectionsAndPages(id);
       }
     };
-
     fetchCourseData();
   }, [id, setCurrentCourse, fetchSectionsAndPages]);
 
@@ -32,52 +31,38 @@ const Page = () => {
     return <div>Loading...</div>;
   }
 
-  const allItems: (ISection | IPage)[] = [
-    ...sectionsAndPages.sections,
-    ...sectionsAndPages.pages,
-  ];
+  const allPages = sectionsAndPages.pages;
 
-  const currentItem = allItems[currentIndex];
+  const currentPage = allPages[currentPageIndex];
 
   const handlePrevious = () => {
-    setCurrentIndex((prevIndex) => Math.max(0, prevIndex - 1));
+    if (currentPageIndex > 0) {
+      setCurrentPageIndex(currentPageIndex - 1);
+    }
   };
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) =>
-      Math.min(allItems.length - 1, prevIndex + 1),
-    );
+    if (currentPageIndex < allPages.length - 1) {
+      setCurrentPageIndex(currentPageIndex + 1);
+    }
   };
-
-  console.log(sectionsAndPages);
-
   return (
-    <div>
-      <h1>{currentCourse.name}</h1>
-      <p>{currentCourse.description}</p>
-      <div>
-        {currentItem && "title" in currentItem ? (
-          <div>
-            <h2>Section: {currentItem.title}</h2>
-            <p>{currentItem.description}</p>
-          </div>
-        ) : currentItem && "content" in currentItem ? (
-          <div>
-            <p>{currentItem.content}</p>
-          </div>
-        ) : null}
-      </div>
-      <div>
-        <Button onClick={handlePrevious} disabled={currentIndex === 0}>
-          Previous
-        </Button>
-        <Button
-          onClick={handleNext}
-          disabled={currentIndex === allItems.length - 1}
-        >
-          Next
-        </Button>
-      </div>
+    <div className="p-6">
+      <h1 className="text-3xl font-bold mb-4">{currentCourse.name}</h1>
+      <p className="text-lg mb-6">{currentCourse.description}</p>
+
+      {currentPage && currentPage.type === "QUESTION" ? (
+        <QuestionPage page={currentPage} />
+      ) : (
+        <TheoryPage page={currentPage} />
+      )}
+
+      <ButtonNavigation
+        currentPageIndex={currentPageIndex}
+        totalPages={allPages.length}
+        onPrevious={handlePrevious}
+        onNext={handleNext}
+      />
     </div>
   );
 };

@@ -8,4 +8,5 @@ export interface IPage {
   createdAt: Timestamp;
   type: IPageType;
   content: string; //The content here is markdown.
+  videoUrl?: string; // There could be a video url
 }
