@@ -1,0 +1,21 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "main": "test.ts",
+  "scripts": {
+    "test": "mocha -r ts-node/register \"**/*.spec.ts\"",
+    "test:watch": "mocha -r ts-node/register \"**/*.spec.ts\" --watch --watch-files test"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^3.0.4",
+    "@firebase/testing": "^0.20.11",
+    "@types/mocha": "^10.0.8",
+    "@types/node": "^22.7.4",
+    "mocha": "^10.7.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2"
+  }
+}
