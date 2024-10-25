@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "../config/firebase";
 import { ICourse } from "../types/Course";
 import { ISection } from "../types/Section";

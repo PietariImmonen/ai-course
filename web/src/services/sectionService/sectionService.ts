@@ -1,4 +1,4 @@
-import { doc, getDoc } from "firebase/firestore";
+import { getDoc } from "firebase/firestore";
 import { getCourseById } from "../courseService/courseService";
 import { ICourse } from "@/src/types/Course";
 import { ISection } from "@/src/types/Section";
