@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { paths } from "@/routes/paths";
 
 import { useAuthContext } from "@/hooks/use-auth-context";
@@ -16,24 +16,9 @@ type Props = {
 
 export function AuthGuard({ children }: Props) {
   const router = useRouter();
-
   const pathname = usePathname();
-
-  const searchParams = useSearchParams();
-
   const { authenticated, loading } = useAuthContext();
-
   const [isChecking, setIsChecking] = useState<boolean>(true);
-
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set(name, value);
-
-      return params.toString();
-    },
-    [searchParams],
-  );
 
   const checkPermissions = async (): Promise<void> => {
     if (loading) {
@@ -43,14 +28,8 @@ export function AuthGuard({ children }: Props) {
     // If not authenticated, redirect to login
     if (!authenticated) {
       const signInPath = paths.auth.login;
-      const returnTo = `${pathname}${
-        searchParams.toString() ? `?${searchParams.toString()}` : ""
-      }`;
-      const token = searchParams.get("token");
-      let href = `${signInPath}?${createQueryString("returnTo", returnTo)}`;
-      if (token) {
-        href += `&token=${token}`;
-      }
+      const returnTo = pathname;
+      const href = `${signInPath}?returnTo=${encodeURIComponent(returnTo)}`;
       router.replace(href);
       return;
     }
