@@ -1,14 +1,48 @@
 "use client";
 
-import { useAuthContext } from "../../hooks/use-auth-context";
+import { useCourseStore } from "@/src/stores/course-store";
+import { useEffect } from "react";
+import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/src/components/ui/card";
 
 const Page = () => {
-  const { user } = useAuthContext();
+  const { courses, fetchCourses } = useCourseStore();
+
+  useEffect(() => {
+    fetchCourses();
+  }, [fetchCourses]);
 
   return (
     <div className="flex flex-col gap-4">
-      <h1>Dashboard</h1>
-      <p>{user?.email}</p>
+      <h1 className="text-2xl font-bold">Courses</h1>
+
+      <div>
+        {courses.map((course) => (
+          <Card key={course.id} className="max-w-[300px]">
+            <CardHeader>
+              <CardTitle>{course.name}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>{course.description}</p>
+            </CardContent>
+            <CardFooter>
+              <Link
+                href={`/dashboard/course/${course.id}`}
+                passHref
+                className="p-2 border rounded-md"
+              >
+                View Course
+              </Link>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 };
