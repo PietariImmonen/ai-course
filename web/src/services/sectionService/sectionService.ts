@@ -8,6 +8,7 @@ export const getSectionsWithRef = async (
   courseId: string,
 ): Promise<{ course: ICourse | null; sections: ISection[] }> => {
   const course: ICourse | null = await getCourseById(courseId);
+  console.log(course);
   if (course) {
     const sectionRefs = course.sections;
     const sectionsData = await Promise.all(
