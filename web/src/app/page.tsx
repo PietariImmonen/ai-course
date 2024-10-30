@@ -1,5 +1,9 @@
-import { redirect } from "next/navigation";
-
+import OpenCourses from "@/src/components/open-courses/open-courses";
+import CenteredLayout from "../layout/centered/centered-layout";
 export default function Home() {
-  redirect("/dashboard");
+  return (
+    <CenteredLayout>
+      <OpenCourses />
+    </CenteredLayout>
+  );
 }
