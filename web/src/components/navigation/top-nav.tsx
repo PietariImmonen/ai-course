@@ -4,7 +4,7 @@ import React from "react";
 import { Button } from "../ui/button";
 
 import ProfileDropdown from "./profile-dropdown";
-import { LayoutDashboard, Menu, Settings } from "lucide-react";
+import { Menu } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -14,8 +14,12 @@ import {
 } from "../ui/sheet";
 
 import { Sidebar } from "./side-nav";
+import { navData } from "@/src/lib/nav-data";
+import { paths } from "@/src/routes/paths";
+import { useRouter } from "next/navigation";
 
 const TopNav: React.FC = () => {
+  const router = useRouter();
   return (
     <header className="bg-white border-b border-gray-200">
       <div className="flex items-center justify-between px-4 py-3">
@@ -37,24 +41,15 @@ const TopNav: React.FC = () => {
                 Navigation menu for mobile devices
               </SheetDescription>
 
-              <Sidebar
-                isMobile={true}
-                items={[
-                  {
-                    href: "/",
-                    icon: LayoutDashboard,
-                    children: "Dashboard",
-                  },
-                  {
-                    href: "/settings",
-                    icon: Settings,
-                    children: "Settings",
-                  },
-                ]}
-              />
+              <Sidebar isMobile={true} items={navData} />
             </SheetContent>
           </Sheet>
-          <h1 className="ml-4 text-xl font-semibold">My App</h1>
+          <h1
+            className="ml-4 text-xl font-semibold cursor-pointer"
+            onClick={() => router.push(paths.root)}
+          >
+            My App
+          </h1>
         </div>
         <nav>
           <ul className="flex space-x-4">

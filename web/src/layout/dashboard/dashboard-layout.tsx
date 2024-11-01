@@ -1,6 +1,6 @@
+import { navData } from "@/src/lib/nav-data";
 import { Sidebar } from "../../components/navigation/side-nav";
 import TopNav from "../../components/navigation/top-nav";
-import { LayoutDashboard, Settings } from "lucide-react";
 
 export default function DashboardLayout({
   children,
@@ -15,12 +15,7 @@ export default function DashboardLayout({
       {/* Main Content Area */}
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar for larger screens */}
-        <Sidebar
-          items={[
-            { href: "/", icon: LayoutDashboard, children: "Dashboard" },
-            { href: "/settings", icon: Settings, children: "Settings" },
-          ]}
-        />
+        <Sidebar items={navData} />
 
         {/* Main content */}
         <div className="flex-1 p-4 overflow-y-auto">{children}</div>

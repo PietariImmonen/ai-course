@@ -1,8 +1,10 @@
 export const paths = {
+  root: "/",
   dashboard: {
     root: "/dashboard",
     users: "/dashboard/users",
     settings: "/dashboard/settings",
+    createCourse: "/dashboard/create-course",
   },
   auth: {
     login: "/auth/sign-in",
