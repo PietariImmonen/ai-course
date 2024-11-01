@@ -6,12 +6,21 @@ import SectionsComponent from "@/src/components/sections/sections-component";
 import ReactPlayer from "react-player";
 import GPTInput from "../gpt-input/gpt-input";
 import { useState } from "react";
+import ButtonNavigation from "@/src/components/page-navigation/button-navigation";
 
 interface QuestionPageProps {
   page: IPage;
+  currentPageIndex: number;
+  handlePrevious: () => void;
+  handleNext: () => void;
 }
 
-const QuestionPage = ({ page }: QuestionPageProps) => {
+const QuestionPage = ({
+  page,
+  currentPageIndex,
+  handlePrevious,
+  handleNext,
+}: QuestionPageProps) => {
   const { sectionsAndPages } = useCourseStore();
   const [response, setResponse] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -38,7 +47,7 @@ const QuestionPage = ({ page }: QuestionPageProps) => {
   };
 
   return (
-    <div className="flex gap-4 w-full max-w-6xl mx-auto px-4">
+    <div className="flex gap-4 w-full max-w-6xl mx-auto px-4 sm:flex-row flex-col">
       <Card className="w-full">
         <CardContent className="p-6">
           <div className="aspect-video relative rounded-lg overflow-hidden bg-background mb-6">
@@ -69,11 +78,19 @@ const QuestionPage = ({ page }: QuestionPageProps) => {
           )}
         </CardContent>
       </Card>
-      {sectionsAndPages.sections && (
-        <div className="mb-8">
-          <SectionsComponent sections={sectionsAndPages.sections} />
-        </div>
-      )}
+      <div className="sm:w-1/5 flex sm:flex-col flex-col-reverse">
+        {sectionsAndPages.sections && (
+          <div className="mb-8">
+            <SectionsComponent sections={sectionsAndPages.sections} />
+          </div>
+        )}
+        <ButtonNavigation
+          currentPageIndex={currentPageIndex}
+          totalPages={sectionsAndPages.pages.length}
+          onPrevious={handlePrevious}
+          onNext={handleNext}
+        />
+      </div>
     </div>
   );
 };

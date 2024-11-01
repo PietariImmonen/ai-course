@@ -5,16 +5,25 @@ import { Card, CardContent } from "@/src/components/ui/card";
 import { useCourseStore } from "@/src/stores/course-store";
 import SectionsComponent from "@/src/components/sections/sections-component";
 import ReactPlayer from "react-player";
+import ButtonNavigation from "@/src/components/page-navigation/button-navigation";
 
 interface TheoryPageProps {
   page: IPage;
+  currentPageIndex: number;
+  handlePrevious: () => void;
+  handleNext: () => void;
 }
 
-const TheoryPage = ({ page }: TheoryPageProps) => {
+const TheoryPage = ({
+  page,
+  currentPageIndex,
+  handlePrevious,
+  handleNext,
+}: TheoryPageProps) => {
   const { sectionsAndPages } = useCourseStore();
 
   return (
-    <div className="flex gap-4  w-full max-w-6xl mx-auto px-4">
+    <div className="flex gap-4 w-full max-w-6xl mx-auto px-4 sm:flex-row flex-col">
       <Card className="w-full">
         <CardContent className="p-6">
           <div className="aspect-video relative rounded-lg overflow-hidden bg-background mb-6">
@@ -37,11 +46,19 @@ const TheoryPage = ({ page }: TheoryPageProps) => {
           </div>
         </CardContent>
       </Card>
-      {sectionsAndPages.sections && (
-        <div className="mb-8">
-          <SectionsComponent sections={sectionsAndPages.sections} />
-        </div>
-      )}
+      <div className="sm:w-1/5 flex sm:flex-col flex-col-reverse">
+        {sectionsAndPages.sections && (
+          <div className="mb-8">
+            <SectionsComponent sections={sectionsAndPages.sections} />
+          </div>
+        )}
+        <ButtonNavigation
+          currentPageIndex={currentPageIndex}
+          totalPages={sectionsAndPages.pages.length}
+          onPrevious={handlePrevious}
+          onNext={handleNext}
+        />
+      </div>
     </div>
   );
 };

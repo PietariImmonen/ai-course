@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { useCourseStore } from "@/src/stores/course-store";
-import ButtonNavigation from "@/src/sections/pages/page-navigation/button-navigation";
 import TheoryPage from "@/src/sections/pages/theory/theory-page";
 import QuestionPage from "@/src/sections/pages/question/question-page";
 import LoadingScreen from "@/src/components/loaders/loading-screen";
@@ -93,17 +92,20 @@ const Page = () => {
   return (
     <div className="p-6">
       {currentPage.type === "QUESTION" ? (
-        <QuestionPage page={currentPage} />
+        <QuestionPage
+          page={currentPage}
+          currentPageIndex={currentPageIndex}
+          handlePrevious={handlePrevious}
+          handleNext={handleNext}
+        />
       ) : (
-        <TheoryPage page={currentPage} />
+        <TheoryPage
+          page={currentPage}
+          currentPageIndex={currentPageIndex}
+          handlePrevious={handlePrevious}
+          handleNext={handleNext}
+        />
       )}
-
-      <ButtonNavigation
-        currentPageIndex={currentPageIndex}
-        totalPages={allPages.length}
-        onPrevious={handlePrevious}
-        onNext={handleNext}
-      />
     </div>
   );
 };
