@@ -12,7 +12,7 @@ export const Sidebar = ({
   <nav
     className={`${
       isMobile ? "lg:hidden" : "hidden lg:block"
-    } w-64 h-full bg-white border-r border-gray-200`}
+    } w-64 h-full bg-background border-r border-border`}
   >
     <div className="h-full px-3 py-4 overflow-y-auto">
       <ul className="space-y-2 font-medium">

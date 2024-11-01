@@ -7,6 +7,8 @@ export interface IPage {
   updatedAt: Timestamp;
   createdAt: Timestamp;
   type: IPageType;
+  title: string;
   content: string; //The content here is markdown.
   videoUrl?: string; // There could be a video url
+  sectionId: string;
 }

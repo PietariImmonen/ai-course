@@ -1,21 +1,60 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useCourseStore } from "@/src/stores/course-store";
-import QuestionPage from "@/src/components/pages/question/question-page";
-import TheoryPage from "@/src/components/pages/theory/theory-page";
-import ButtonNavigation from "@/src/components/pages/page-navigation/button-navigation";
+import ButtonNavigation from "@/src/sections/pages/page-navigation/button-navigation";
+import TheoryPage from "@/src/sections/pages/theory/theory-page";
+import QuestionPage from "@/src/sections/pages/question/question-page";
+import LoadingScreen from "@/src/components/loaders/loading-screen";
 
 const Page = () => {
   const { id } = useParams();
+  const searchParams = useSearchParams();
   const {
     currentCourse,
     sectionsAndPages,
     setCurrentCourse,
     fetchSectionsAndPages,
   } = useCourseStore();
-  const [currentPageIndex, setCurrentPageIndex] = useState(0);
+
+  const [currentPageIndex, setCurrentPageIndex] = useState(() => {
+    return parseInt(searchParams.get("page") || "0");
+  });
+
+  useEffect(() => {
+    if (!currentCourse || !sectionsAndPages.sections.length) return;
+
+    // Calculate total pages in each section
+    const pagesPerSection = sectionsAndPages.sections.map((section) => {
+      // Get pages for current section
+      const sectionPages = sectionsAndPages.pages.filter(
+        (page) => page.sectionId === section.id,
+      ).length;
+
+      return sectionPages;
+    });
+
+    // Find which section the current page belongs to
+    let section = 0;
+    let pageCount = 0;
+    for (let i = 0; i < pagesPerSection.length; i++) {
+      pageCount += pagesPerSection[i];
+      if (currentPageIndex < pageCount) {
+        section = i;
+        break;
+      }
+    }
+
+    const newUrl = `?section=${section}&page=${currentPageIndex}`;
+    window.history.replaceState({}, "", newUrl);
+  }, [
+    currentPageIndex,
+    currentCourse,
+    id,
+    sectionsAndPages.sections,
+    sectionsAndPages.pages,
+  ]);
 
   useEffect(() => {
     const fetchCourseData = async () => {
@@ -28,12 +67,16 @@ const Page = () => {
   }, [id, setCurrentCourse, fetchSectionsAndPages]);
 
   if (!currentCourse || !sectionsAndPages.sections.length) {
-    return <div>Loading...</div>;
+    return <LoadingScreen />;
   }
 
-  const allPages = sectionsAndPages.pages;
+  const allPages = sectionsAndPages.pages || [];
 
   const currentPage = allPages[currentPageIndex];
+
+  if (!currentPage) {
+    return <LoadingScreen />;
+  }
 
   const handlePrevious = () => {
     if (currentPageIndex > 0) {
@@ -46,12 +89,10 @@ const Page = () => {
       setCurrentPageIndex(currentPageIndex + 1);
     }
   };
+
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold mb-4">{currentCourse.name}</h1>
-      <p className="text-lg mb-6">{currentCourse.description}</p>
-
-      {currentPage && currentPage.type === "QUESTION" ? (
+      {currentPage.type === "QUESTION" ? (
         <QuestionPage page={currentPage} />
       ) : (
         <TheoryPage page={currentPage} />

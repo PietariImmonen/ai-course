@@ -11,7 +11,7 @@ export const NavigationItem = ({
 }) => (
   <Link
     href={href}
-    className="flex items-center p-2 text-gray-700 rounded-lg hover:bg-gray-100"
+    className="flex items-center p-2 text-text rounded-lg hover:bg-muted"
   >
     <Icon className="w-5 h-5 mr-2" />
     {children}

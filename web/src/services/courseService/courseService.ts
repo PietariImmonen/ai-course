@@ -40,7 +40,6 @@ export const getCourseById = async (
   courseId: string,
 ): Promise<ICourse | null> => {
   try {
-    console.log(courseId);
     const courseDoc = doc(firestore, "courses", courseId);
     const courseSnapshot = await getDoc(courseDoc);
     console.log(courseSnapshot.data());
@@ -62,6 +61,7 @@ export const createCourse = async (data: {
     description: string;
     pages: {
       type: "THEORY" | "QUESTION";
+      title: string;
       content: string;
       videoUrl?: string;
     }[];
@@ -70,33 +70,17 @@ export const createCourse = async (data: {
   try {
     const timestamp = Timestamp.now();
 
-    // Create pages first
-    const pageRefs: { [key: string]: DocumentReference } = {};
-    for (const section of data.sections) {
-      for (const page of section.pages) {
-        const pageRef = doc(collection(firestore, "pages"));
-        const pageData: IPage = {
-          id: pageRef.id, // Using Firebase auto-generated ID
-          type: page.type,
-          content: page.content,
-          videoUrl: page.videoUrl,
-          createdAt: timestamp,
-          updatedAt: timestamp,
-        };
-        await setDoc(pageRef, pageData);
-        pageRefs[pageRef.id] = pageRef;
-      }
-    }
-
-    // Create sections
+    // Create sections first
     const sectionRefs: DocumentReference[] = [];
+    const sectionIds: { [key: string]: string } = {};
     for (const section of data.sections) {
       const sectionRef = doc(collection(firestore, "sections"));
+      sectionIds[section.title] = sectionRef.id;
       const sectionData: ISection = {
-        id: sectionRef.id, // Using Firebase auto-generated ID
+        id: sectionRef.id,
         title: section.title,
         description: section.description,
-        pages: Object.values(pageRefs),
+        pages: [], // Will be updated after creating pages
         createdAt: timestamp,
         updatedAt: timestamp,
       };
@@ -104,10 +88,38 @@ export const createCourse = async (data: {
       sectionRefs.push(sectionRef);
     }
 
+    // Create pages and update sections with page references
+    for (let i = 0; i < data.sections.length; i++) {
+      const section = data.sections[i];
+      const sectionRef = sectionRefs[i];
+      const sectionId = sectionIds[section.title];
+      const sectionPageRefs: DocumentReference[] = [];
+
+      // Create pages for this section
+      for (const page of section.pages) {
+        const pageRef = doc(collection(firestore, "pages"));
+        const pageData: IPage = {
+          id: pageRef.id,
+          type: page.type,
+          title: page.title,
+          content: page.content,
+          videoUrl: page.videoUrl,
+          sectionId: sectionId,
+          createdAt: timestamp,
+          updatedAt: timestamp,
+        };
+        await setDoc(pageRef, pageData);
+        sectionPageRefs.push(pageRef);
+      }
+
+      // Update section with its page references
+      await setDoc(sectionRef, { pages: sectionPageRefs }, { merge: true });
+    }
+
     // Create course
     const courseRef = doc(collection(firestore, "courses"));
     const courseData: ICourse = {
-      id: courseRef.id, // Using Firebase auto-generated ID
+      id: courseRef.id,
       name: data.name,
       description: data.description,
       sections: sectionRefs,

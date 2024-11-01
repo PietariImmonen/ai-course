@@ -21,7 +21,7 @@ const OpenCourses = () => {
     <div className="flex flex-col gap-4">
       <h1 className="text-2xl font-bold">Courses</h1>
 
-      <div>
+      <div className="flex flex-wrap gap-4">
         {courses.map((course) => (
           <Card key={course.id} className="max-w-[300px]">
             <CardHeader>

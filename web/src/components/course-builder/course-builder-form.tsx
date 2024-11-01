@@ -28,8 +28,10 @@ import { createCourse } from "@/src/services/courseService/courseService";
 const pageSchema = z.object({
   id: z.string(),
   type: z.enum(["THEORY", "QUESTION"]),
+  title: z.string().min(1, "Title is required"),
   content: z.string().min(1, "Content is required"),
   videoUrl: z.string().optional(),
+  sectionId: z.string(),
 });
 
 const sectionSchema = z.object({
@@ -37,6 +39,7 @@ const sectionSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
   pages: z.array(pageSchema),
+  sectionImage: z.string().optional(),
 });
 
 const courseSchema = z.object({
@@ -77,24 +80,29 @@ export default function CourseDesigner() {
       title: "",
       description: "",
       pages: [],
+      sectionImage: "",
     });
   };
 
   const addPage = (sectionIndex: number) => {
+    const sectionId = form.getValues(`sections.${sectionIndex}.id`);
     const pagesArray = form.getValues(`sections.${sectionIndex}.pages`) || [];
     form.setValue(`sections.${sectionIndex}.pages`, [
       ...pagesArray,
       {
         id: generateId(),
         type: "THEORY",
+        title: "",
         content: "",
         videoUrl: "",
+        sectionId,
       },
     ]);
   };
 
   const onSubmit = async (data: CourseFormValues) => {
     try {
+      console.log(data);
       const result = await createCourse(data);
       console.log(result);
     } catch (error) {
@@ -183,6 +191,22 @@ export default function CourseDesigner() {
                     </FormItem>
                   )}
                 />
+                <FormField
+                  control={form.control}
+                  name={`sections.${sectionIndex}.sectionImage`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Section Image URL</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Section Image URL (optional)"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <Button
                   type="button"
                   variant="destructive"
@@ -221,6 +245,19 @@ export default function CourseDesigner() {
                                   </SelectItem>
                                 </SelectContent>
                               </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`sections.${sectionIndex}.pages.${pageIndex}.title`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Page Title</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Page Title" {...field} />
+                              </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}

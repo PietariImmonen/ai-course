@@ -1,9 +1,4 @@
-import OpenCourses from "@/src/components/open-courses/open-courses";
-import CenteredLayout from "../layout/centered/centered-layout";
+import { redirect } from "next/navigation";
 export default function Home() {
-  return (
-    <CenteredLayout>
-      <OpenCourses />
-    </CenteredLayout>
-  );
+  redirect("/course/N8YSKpN6QzewFrRkXq5x");
 }

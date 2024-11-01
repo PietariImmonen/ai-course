@@ -8,7 +8,6 @@ export const getSectionsWithRef = async (
   courseId: string,
 ): Promise<{ course: ICourse | null; sections: ISection[] }> => {
   const course: ICourse | null = await getCourseById(courseId);
-  console.log(course);
   if (course) {
     const sectionRefs = course.sections;
     const sectionsData = await Promise.all(
@@ -29,15 +28,27 @@ export const getSectionsAndPages = async (
   courseId: string,
 ): Promise<{ sections: ISection[]; pages: IPage[] }> => {
   const { sections } = await getSectionsWithRef(courseId);
+  const pagesMap = new Map<string, IPage>();
 
-  const pagesPromises = sections.flatMap((section) =>
-    section.pages.map(async (pageRef) => {
-      const pageSnapshot = await getDoc(pageRef);
-      return { id: pageSnapshot.id, ...pageSnapshot.data() } as IPage;
+  // Get pages for each section and store them in a map to avoid duplicates
+  await Promise.all(
+    sections.map(async (section) => {
+      const pagePromises = section.pages.map(async (pageRef) => {
+        const pageSnapshot = await getDoc(pageRef);
+        const pageData = {
+          id: pageSnapshot.id,
+          ...pageSnapshot.data(),
+          sectionId: section.id,
+        } as IPage;
+        pagesMap.set(pageSnapshot.id, pageData);
+        return pageData;
+      });
+      await Promise.all(pagePromises);
     }),
   );
 
-  const pages = await Promise.all(pagesPromises);
+  // Convert map to array
+  const pages = Array.from(pagesMap.values());
 
   return { sections, pages };
 };

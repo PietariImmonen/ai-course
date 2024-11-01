@@ -14,7 +14,7 @@ const ButtonNavigation: React.FC<ButtonNavigationProps> = ({
   onNext,
 }) => {
   return (
-    <div className="flex justify-between mt-8">
+    <div className="flex justify-between mt-8 pt-4">
       <Button onClick={onPrevious} disabled={currentPageIndex === 0}>
         Previous
       </Button>

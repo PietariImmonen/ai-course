@@ -7,4 +7,5 @@ export interface ISection {
   title: string;
   description: string;
   pages: DocumentReference[];
+  sectionImage?: string;
 }

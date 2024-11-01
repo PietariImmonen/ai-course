@@ -49,6 +49,7 @@ export const useCourseStore = create<CourseStore>((set) => ({
 
   fetchSectionsAndPages: async (courseId: string) => {
     const { sections, pages } = await getSectionsAndPages(courseId);
+    console.log(sections, pages);
     set({ sectionsAndPages: { sections, pages } });
   },
 
