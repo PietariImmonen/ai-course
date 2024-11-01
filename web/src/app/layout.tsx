@@ -4,7 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "../auth/firebase/auth-context";
 
 const figtree = localFont({
-  src: "./fonts/Figtree.woff",
+  src: "./fonts/Figtree-Regular.ttf",
   variable: "--font-figtree",
   weight: "100 900",
 });
