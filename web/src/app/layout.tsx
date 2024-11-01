@@ -3,9 +3,9 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { AuthProvider } from "../auth/firebase/auth-context";
 
-const figtree = localFont({
-  src: "./fonts/Figtree-Regular.ttf",
-  variable: "--font-figtree",
+const geist = localFont({
+  src: "./fonts/GeistVF.woff",
+  variable: "--font-geist",
   weight: "100 900",
 });
 
@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${figtree.variable} antialiased`}>
+      <body className={`${geist.variable} antialiased`}>
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
