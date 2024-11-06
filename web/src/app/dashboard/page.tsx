@@ -33,11 +33,11 @@ const Page = () => {
             </CardContent>
             <CardFooter>
               <Link
-                href={`/dashboard/course/${course.id}`}
+                href={`/dashboard/edit-course/${course.id}`}
                 passHref
                 className="p-2 border rounded-md"
               >
-                View Course
+                Edit course
               </Link>
             </CardFooter>
           </Card>
