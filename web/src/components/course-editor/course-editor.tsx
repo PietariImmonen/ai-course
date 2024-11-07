@@ -5,6 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import dynamic from "next/dynamic";
+const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
@@ -29,7 +31,6 @@ import {
   getCourse,
   updateCourse,
 } from "@/src/services/courseService/courseService";
-import { useToast } from "@/src/hooks/use-toast";
 
 const pageSchema = z.object({
   id: z.string(),
@@ -64,7 +65,6 @@ export default function CourseEditor() {
   const params = useParams();
   const courseId = params.id as string;
   const [isLoading, setIsLoading] = useState(true);
-  const { toast } = useToast();
 
   const form = useForm<CourseFormValues>({
     resolver: zodResolver(courseSchema),
@@ -132,10 +132,6 @@ export default function CourseEditor() {
     setIsLoading(true);
     try {
       await updateCourse(data);
-      toast({
-        title: "Course updated successfully",
-        description: "Your course has been updated successfully",
-      });
     } catch (error) {
       console.error("Error updating course:", error);
     } finally {
@@ -307,10 +303,15 @@ export default function CourseEditor() {
                             <FormItem>
                               <FormLabel>Content</FormLabel>
                               <FormControl>
-                                <Textarea
-                                  placeholder="Page Content (Markdown)"
-                                  {...field}
-                                />
+                                <div className="border rounded-md">
+                                  <MDEditor
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    preview="edit"
+                                    height={400}
+                                    className="min-h-[200px]"
+                                  />
+                                </div>
                               </FormControl>
                               <FormMessage />
                             </FormItem>

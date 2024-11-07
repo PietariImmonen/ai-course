@@ -3,6 +3,8 @@
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import dynamic from "next/dynamic";
+const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
@@ -280,10 +282,15 @@ export default function CourseDesigner() {
                             <FormItem>
                               <FormLabel>Content</FormLabel>
                               <FormControl>
-                                <Textarea
-                                  placeholder="Page Content (Markdown)"
-                                  {...field}
-                                />
+                                <div className="border rounded-md">
+                                  <MDEditor
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    preview="edit"
+                                    height={400}
+                                    className="min-h-[200px]"
+                                  />
+                                </div>
                               </FormControl>
                               <FormMessage />
                             </FormItem>
