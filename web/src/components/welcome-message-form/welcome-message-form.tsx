@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
@@ -6,7 +7,6 @@ import * as z from "zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -22,12 +22,9 @@ import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
-  hobbies: z.string().min(1, "Hobbies are required"),
   jobRole: z.string().min(1, "Job role is required"),
-  industry: z.string().min(1, "Industry is required"),
-  personalGoals: z.string().min(1, "Personal goals are required"),
-  aiKnowledge: z.string().min(1, "AI knowledge description is required"),
-  challenges: z.string().min(1, "Challenges description is required"),
+  hobbies: z.string().min(1, "Please tell us about your hobbies"),
+  aiKnowledge: z.string().min(1, "Please tell us about your AI experience"),
 });
 
 export default function WelcomeMessageForm() {
@@ -36,13 +33,10 @@ export default function WelcomeMessageForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      hobbies: "",
       firstName: "",
       jobRole: "",
-      industry: "",
-      personalGoals: "",
+      hobbies: "",
       aiKnowledge: "",
-      challenges: "",
     },
   });
 
@@ -51,12 +45,17 @@ export default function WelcomeMessageForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
+      // Add default values for unused fields to maintain API compatibility
+      const submitData = {
+        ...values,
+      };
+
       const response = await fetch("/api/welcome-message", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify(submitData),
       });
 
       if (!response.ok) {
@@ -76,40 +75,22 @@ export default function WelcomeMessageForm() {
   }
 
   return (
-    <Card className="max-w-3xl sm:mx-auto my-10 mx-2">
+    <Card className="max-w-2xl sm:mx-auto my-10 mx-2">
       <CardHeader>
-        <CardTitle>Tell us about yourself</CardTitle>
+        <CardTitle>Welcome! Let's personalize your learning journey</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
               name="firstName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>First Name</FormLabel>
+                  <FormLabel>What's your first name?</FormLabel>
                   <FormControl>
                     <Input placeholder="John" {...field} />
                   </FormControl>
-                  <FormDescription>
-                    Please enter your first name
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="hobbies"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>What are your hobbies?</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Hiking, Reading, Cooking" {...field} />
-                  </FormControl>
-                  <FormDescription>Add your hobbies one by one</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -120,13 +101,13 @@ export default function WelcomeMessageForm() {
               name="jobRole"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Job Role</FormLabel>
+                  <FormLabel>What do you do?</FormLabel>
                   <FormControl>
-                    <Input placeholder="Software Engineer" {...field} />
+                    <Input
+                      placeholder="e.g. Marketing Manager, Developer, Student"
+                      {...field}
+                    />
                   </FormControl>
-                  <FormDescription>
-                    What is your current job role?
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -134,37 +115,17 @@ export default function WelcomeMessageForm() {
 
             <FormField
               control={form.control}
-              name="industry"
+              name="hobbies"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Industry</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Technology" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    What industry do you work in?
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="personalGoals"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Personal Goals</FormLabel>
+                  <FormLabel>What are your hobbies and interests?</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="What are your personal goals regarding AI?"
+                      placeholder="e.g. Photography, gaming, cooking, reading"
                       className="resize-none"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Share your personal goals and aspirations
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -175,51 +136,26 @@ export default function WelcomeMessageForm() {
               name="aiKnowledge"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>AI Knowledge</FormLabel>
+                  <FormLabel>How familiar are you with AI?</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="What do you currently know about AI?"
+                      placeholder="e.g. Complete beginner, Used ChatGPT a few times, etc."
                       className="resize-none"
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Describe your current understanding of AI
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="challenges"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Challenges</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="What challenges do you face in your job?"
-                      className="resize-none"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Describe the challenges you face in your work
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <div className="flex gap-2 items-center justify-between sm:flex-row flex-col">
               <Button
                 type="submit"
                 disabled={isLoading}
                 className="sm:w-auto w-full"
               >
-                {isLoading
-                  ? "Generating..."
-                  : "Get your personalized welcome message"}
+                {isLoading ? "Creating your experience..." : "Start my journey"}
               </Button>
               <Button
                 onClick={() => router.push("/course/N8YSKpN6QzewFrRkXq5x")}
@@ -227,7 +163,7 @@ export default function WelcomeMessageForm() {
                 disabled={isLoading}
                 className="sm:w-auto w-full"
               >
-                Skip
+                Skip personalization
               </Button>
             </div>
           </form>

@@ -8,31 +8,20 @@ const openai = new OpenAI({
 
 export async function POST(request: NextRequest) {
   try {
-    const {
-      firstName,
-      hobbies,
-      jobRole,
-      industry,
-      personalGoals,
-      aiKnowledge,
-      challenges,
-    } = await request.json();
+    const { firstName, jobRole, hobbies, aiKnowledge } = await request.json();
 
     const prompt = generateWelcomeMessagePrompt({
       firstName,
-      hobbies,
       jobRole,
-      industry,
-      personalGoals,
+      hobbies,
       aiKnowledge,
-      challenges,
     });
 
     const completion = await openai.chat.completions.create({
       messages: [{ role: "user", content: prompt }],
       model: "gpt-4o-mini",
       temperature: 0.7,
-      max_tokens: 3000,
+      max_tokens: 1000,
     });
 
     const welcomeMessage = completion.choices[0].message.content;

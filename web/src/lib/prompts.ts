@@ -1,37 +1,36 @@
 export const generateWelcomeMessagePrompt = ({
   firstName,
-  hobbies,
   jobRole,
-  industry,
-  personalGoals,
+  hobbies,
   aiKnowledge,
-  challenges,
 }: {
   firstName: string;
-  hobbies: string;
   jobRole: string;
-  industry: string;
-  personalGoals: string;
+  hobbies: string;
   aiKnowledge: string;
-  challenges: string;
 }) => {
-  return `You are to create a personalized welcome message for a new user starting an AI introductory
-course. The user has provided the following information:
-● First Name: ${firstName}
-● Hobbies: ${hobbies}
-● Job Role: ${jobRole}
-● Industry: ${industry}
-● Personal Goals: ${personalGoals}
-● Current Knowledge about AI: ${aiKnowledge}
-● Challenges Faced in Their Job: ${challenges}
+  return `As an AI course mentor, create a warm, personalized welcome message for ${firstName}. Here's what you know about them:
 
-Using this information, craft a friendly and motivating message that:
-● Helps the user relate to the content.
-● Is easily approachable.
-● Emphasizes the realistic possibilities and benefits of AI in their everyday life and work.
-● Shows empathy if the user is not familiar with AI.
-● Motivates the user by highlighting how learning about AI can benefit and ease their life.
-● Avoids overhyping AI and only proposes use cases that actually have value.
-The message should be in the form of a script suitable for a voice or video recording. Ensure
-the tone is encouraging, friendly, and tailored to the user's background and interests.`;
+Background:
+- They work as: ${jobRole}
+- Their hobbies and interests: ${hobbies}
+- Their current AI knowledge: ${aiKnowledge}
+
+Instructions for crafting the message:
+1. Start with a warm, personal greeting using their first name
+2. Acknowledge their current role and validate its importance
+3. Reference their hobbies and how AI might enhance or relate to their interests
+4. Meet them at their current AI knowledge level:
+   - If beginner: Reassure and emphasize the step-by-step learning approach
+   - If intermediate/advanced: Acknowledge their existing expertise and promise deeper insights
+5. Include one specific, achievable example of how AI could enhance their work or hobbies
+6. End with an encouraging call to action for starting their learning journey
+
+Keep the tone:
+- Conversational and friendly
+- Professional but not overly formal
+- Encouraging without being overwhelming
+- Realistic about AI's capabilities (no hype or exaggeration)
+
+The message should be 2-3 paragraphs long and feel like a personal video introduction.`;
 };
