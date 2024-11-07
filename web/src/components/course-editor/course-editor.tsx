@@ -29,6 +29,7 @@ import {
   getCourse,
   updateCourse,
 } from "@/src/services/courseService/courseService";
+import { useToast } from "@/src/hooks/use-toast";
 
 const pageSchema = z.object({
   id: z.string(),
@@ -63,6 +64,7 @@ export default function CourseEditor() {
   const params = useParams();
   const courseId = params.id as string;
   const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
 
   const form = useForm<CourseFormValues>({
     resolver: zodResolver(courseSchema),
@@ -127,12 +129,17 @@ export default function CourseEditor() {
   };
 
   const onSubmit = async (data: CourseFormValues) => {
+    setIsLoading(true);
     try {
-      console.log(data);
-      const result = await updateCourse(data);
-      console.log(result);
+      await updateCourse(data);
+      toast({
+        title: "Course updated successfully",
+        description: "Your course has been updated successfully",
+      });
     } catch (error) {
       console.error("Error updating course:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -240,6 +247,7 @@ export default function CourseEditor() {
                 <Button
                   type="button"
                   variant="destructive"
+                  className="mr-2"
                   onClick={() => removeSection(sectionIndex)}
                 >
                   Remove Section
@@ -341,24 +349,34 @@ export default function CourseEditor() {
             </Card>
           ))}
 
-          <Button type="button" onClick={addSection}>
+          <Button
+            type="button"
+            onClick={addSection}
+            variant="outline"
+            className="w-full"
+          >
             Add Section
           </Button>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Course Preview</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <pre className="whitespace-pre-wrap">
-                {JSON.stringify(form.watch(), null, 2)}
-              </pre>
-            </CardContent>
-          </Card>
-
-          <Button type="submit">Save Course</Button>
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="w-full h-12 text-lg font-semibold"
+          >
+            {isLoading ? "Saving..." : "Save Course"}
+          </Button>
         </form>
       </Form>
+      <Card>
+        <CardHeader>
+          <CardTitle>Course Preview</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <pre className="whitespace-pre-wrap">
+            {JSON.stringify(form.watch(), null, 2)}
+          </pre>
+        </CardContent>
+      </Card>
     </div>
   );
 }

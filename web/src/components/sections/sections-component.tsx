@@ -2,19 +2,41 @@ import { ISection } from "@/src/types/Section";
 import Image from "next/image";
 import { Card, CardContent } from "@/src/components/ui/card";
 import { ScrollArea } from "@/src/components/ui/scroll-area";
+import { useRouter } from "next/navigation";
+import { IPage } from "@/src/types/Page";
 
 interface SectionsComponentProps {
   sections: ISection[];
+  pages: IPage[];
 }
 
-const SectionsComponent = ({ sections }: SectionsComponentProps) => {
+const SectionsComponent = ({ sections, pages }: SectionsComponentProps) => {
+  const router = useRouter();
+
+  const handleSectionClick = (sectionIndex: number) => {
+    // Calculate page index for this section
+    let pageIndex = 0;
+    for (let i = 0; i < sectionIndex; i++) {
+      const sectionPages = pages.filter(
+        (page) => page.sectionId === sections[i].id,
+      ).length;
+      pageIndex += sectionPages;
+    }
+
+    router.push(`?section=${sectionIndex}&page=${pageIndex}`);
+  };
+
   return (
     <div className="w-full">
       <h3 className="text-xl font-semibold mb-4">Sections</h3>
       <ScrollArea className="h-[400px] w-full rounded-md border p-4">
         <div className="flex flex-col gap-4">
-          {sections.map((section) => (
-            <Card key={section.id} className="flex items-center gap-4 p-4">
+          {sections.map((section, index) => (
+            <Card
+              key={section.id}
+              className="flex items-center gap-4 p-4 cursor-pointer hover:bg-gray-50"
+              onClick={() => handleSectionClick(index)}
+            >
               <div className="h-[100px] w-[100px] relative rounded-lg overflow-hidden bg-background">
                 {section.sectionImage ? (
                   <Image

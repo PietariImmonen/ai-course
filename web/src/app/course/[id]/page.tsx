@@ -21,6 +21,12 @@ const Page = () => {
     return parseInt(searchParams.get("page") || "0");
   });
 
+  // Update current page when URL parameters change
+  useEffect(() => {
+    const page = parseInt(searchParams.get("page") || "0");
+    setCurrentPageIndex(page);
+  }, [searchParams]);
+
   useEffect(() => {
     if (!currentCourse || !sectionsAndPages.sections.length) return;
 

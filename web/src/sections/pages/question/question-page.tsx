@@ -81,7 +81,10 @@ const QuestionPage = ({
       <div className="sm:w-1/5 flex sm:flex-col flex-col-reverse">
         {sectionsAndPages.sections && (
           <div className="mb-8">
-            <SectionsComponent sections={sectionsAndPages.sections} />
+            <SectionsComponent
+              sections={sectionsAndPages.sections}
+              pages={sectionsAndPages.pages}
+            />
           </div>
         )}
         <ButtonNavigation

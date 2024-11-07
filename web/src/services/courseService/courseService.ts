@@ -44,7 +44,6 @@ export const getCourseById = async (
   try {
     const courseDoc = doc(firestore, "courses", courseId);
     const courseSnapshot = await getDoc(courseDoc);
-    console.log(courseSnapshot.data());
     return {
       id: courseSnapshot.id,
       ...courseSnapshot.data(),

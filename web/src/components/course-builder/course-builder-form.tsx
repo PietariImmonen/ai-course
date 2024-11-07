@@ -24,6 +24,8 @@ import {
   FormMessage,
 } from "../ui/form";
 import { createCourse } from "@/src/services/courseService/courseService";
+import { useToast } from "@/src/hooks/use-toast";
+import { useState } from "react";
 
 const pageSchema = z.object({
   id: z.string(),
@@ -55,6 +57,7 @@ type CourseFormValues = z.infer<typeof courseSchema>;
 const generateId = () => Math.random().toString(36).substr(2, 9);
 
 export default function CourseDesigner() {
+  const [isLoading, setIsLoading] = useState(false);
   const form = useForm<CourseFormValues>({
     resolver: zodResolver(courseSchema),
     defaultValues: {
@@ -64,6 +67,8 @@ export default function CourseDesigner() {
       sections: [],
     },
   });
+
+  const { toast } = useToast();
 
   const {
     fields: sectionFields,
@@ -101,12 +106,17 @@ export default function CourseDesigner() {
   };
 
   const onSubmit = async (data: CourseFormValues) => {
+    setIsLoading(true);
     try {
-      console.log(data);
-      const result = await createCourse(data);
-      console.log(result);
+      await createCourse(data);
+      toast({
+        title: "Course created successfully",
+        description: "Your course has been created successfully",
+      });
     } catch (error) {
       console.error("Error creating course:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -210,6 +220,7 @@ export default function CourseDesigner() {
                 <Button
                   type="button"
                   variant="destructive"
+                  className="mr-2"
                   onClick={() => removeSection(sectionIndex)}
                 >
                   Remove Section
@@ -326,7 +337,9 @@ export default function CourseDesigner() {
             </CardContent>
           </Card>
 
-          <Button type="submit">Save Course</Button>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? "Saving..." : "Save Course"}
+          </Button>
         </form>
       </Form>
     </div>
