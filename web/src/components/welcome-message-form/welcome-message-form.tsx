@@ -65,7 +65,6 @@ export default function WelcomeMessageForm() {
       const data = await response.json();
       setWelcomeMessage(data.message);
       setCurrentStep("welcome-message");
-      toast.success("Welcome message generated successfully!");
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to generate welcome message. Please try again.");

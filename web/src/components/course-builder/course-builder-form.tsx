@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useFieldArray, useForm } from "react-hook-form";
@@ -26,16 +27,19 @@ import {
   FormMessage,
 } from "../ui/form";
 import { createCourse } from "@/src/services/courseService/courseService";
-import { useToast } from "@/src/hooks/use-toast";
 import { useState } from "react";
+import { FillGapEditor } from "./fill-gap-editor";
+import { toast } from "sonner";
 
 const pageSchema = z.object({
   id: z.string(),
-  type: z.enum(["THEORY", "QUESTION"]),
+  type: z.enum(["THEORY", "QUESTION", "FILL_GAP"]),
   title: z.string().min(1, "Title is required"),
   content: z.string().min(1, "Content is required"),
   videoUrl: z.string().optional(),
   sectionId: z.string(),
+  prompt: z.string().optional(),
+  promptVariables: z.array(z.string()).optional(),
 });
 
 const sectionSchema = z.object({
@@ -70,8 +74,6 @@ export default function CourseDesigner() {
     },
   });
 
-  const { toast } = useToast();
-
   const {
     fields: sectionFields,
     append: appendSection,
@@ -103,18 +105,17 @@ export default function CourseDesigner() {
         content: "",
         videoUrl: "",
         sectionId,
+        prompt: "",
+        promptVariables: [],
       },
     ]);
   };
 
-  const onSubmit = async (data: CourseFormValues) => {
+  const onSubmit = async (data: any) => {
     setIsLoading(true);
     try {
       await createCourse(data);
-      toast({
-        title: "Course created successfully",
-        description: "Your course has been created successfully",
-      });
+      toast.success("Course created successfully!");
     } catch (error) {
       console.error("Error creating course:", error);
     } finally {
@@ -256,6 +257,9 @@ export default function CourseDesigner() {
                                   <SelectItem value="QUESTION">
                                     Question
                                   </SelectItem>
+                                  <SelectItem value="FILL_GAP">
+                                    Fill the Gap
+                                  </SelectItem>
                                 </SelectContent>
                               </Select>
                               <FormMessage />
@@ -275,27 +279,77 @@ export default function CourseDesigner() {
                             </FormItem>
                           )}
                         />
-                        <FormField
-                          control={form.control}
-                          name={`sections.${sectionIndex}.pages.${pageIndex}.content`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Content</FormLabel>
-                              <FormControl>
-                                <div className="border rounded-md">
-                                  <MDEditor
-                                    value={field.value}
-                                    onChange={field.onChange}
-                                    preview="edit"
-                                    height={400}
-                                    className="min-h-[200px]"
-                                  />
-                                </div>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                        {page.type === "FILL_GAP" ? (
+                          <>
+                            <FormField
+                              control={form.control}
+                              name={`sections.${sectionIndex}.pages.${pageIndex}.content`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Content (Markdown)</FormLabel>
+                                  <FormControl>
+                                    <div className="border rounded-md">
+                                      <MDEditor
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                        preview="edit"
+                                        height={400}
+                                        className="min-h-[200px]"
+                                      />
+                                    </div>
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name={`sections.${sectionIndex}.pages.${pageIndex}.prompt`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>
+                                    Fill in the Gaps Exercise
+                                  </FormLabel>
+                                  <FormControl>
+                                    <FillGapEditor
+                                      value={field.value || ""}
+                                      onChange={(text, variables) => {
+                                        field.onChange(text);
+                                        form.setValue(
+                                          `sections.${sectionIndex}.pages.${pageIndex}.promptVariables`,
+                                          variables,
+                                        );
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </>
+                        ) : (
+                          <FormField
+                            control={form.control}
+                            name={`sections.${sectionIndex}.pages.${pageIndex}.content`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Content</FormLabel>
+                                <FormControl>
+                                  <div className="border rounded-md">
+                                    <MDEditor
+                                      value={field.value}
+                                      onChange={field.onChange}
+                                      preview="edit"
+                                      height={400}
+                                      className="min-h-[200px]"
+                                    />
+                                  </div>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        )}
                         <FormField
                           control={form.control}
                           name={`sections.${sectionIndex}.pages.${pageIndex}.videoUrl`}

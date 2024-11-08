@@ -32,5 +32,7 @@ Keep the tone:
 - Encouraging without being overwhelming
 - Realistic about AI's capabilities (no hype or exaggeration)
 
-The message should be 2-3 paragraphs long and feel like a personal video introduction.`;
+The message should be 2-3 paragraphs long and feel like a personal video introduction.
+In the end there shouldn't be a signature or name.
+`;
 };

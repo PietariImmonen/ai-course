@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Input } from "@/src/components/ui/input";
 import { Button } from "@/src/components/ui/button";
 import ReactMarkdown from "react-markdown";
+import { Separator } from "@/src/components/ui/separator";
 
 interface GPTInputProps {
   onSubmit: (prompt: string) => void;
@@ -16,12 +17,13 @@ const GPTInput: React.FC<GPTInputProps> = ({ onSubmit }) => {
     onSubmit(prompt);
     // For demonstration purposes, we're setting a mock response
     // In a real application, you'd wait for the actual response from the API
-    setResponse(`This is a mock response to: "${prompt}"`);
+    setResponse(`This is a response to:"${prompt}"`);
     setPrompt("");
   };
 
   return (
     <div className="mt-4">
+      <Separator className="my-4" />
       <form onSubmit={handleSubmit} className="mb-4">
         <Input
           type="text"

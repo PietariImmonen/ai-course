@@ -65,6 +65,8 @@ export const createCourse = async (data: {
       title: string;
       content: string;
       videoUrl?: string;
+      prompt?: string;
+      promptVariables?: string[];
     }[];
   }[];
 }) => {
@@ -105,6 +107,8 @@ export const createCourse = async (data: {
           title: page.title,
           content: page.content,
           videoUrl: page.videoUrl,
+          prompt: page.prompt,
+          promptVariables: page.promptVariables,
           sectionId: sectionId,
           createdAt: timestamp,
           updatedAt: timestamp,
@@ -214,6 +218,8 @@ export const updateCourse = async (data: CourseFormValues) => {
               videoUrl: page.videoUrl,
               sectionId: section.id,
               updatedAt: timestamp,
+              prompt: page.prompt || "",
+              promptVariables: page.promptVariables || [],
             };
             await setDoc(pageRef, pageData, { merge: true });
             return pageRef;

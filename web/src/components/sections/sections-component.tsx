@@ -2,7 +2,7 @@ import { ISection } from "@/src/types/Section";
 import Image from "next/image";
 import { Card, CardContent } from "@/src/components/ui/card";
 import { ScrollArea } from "@/src/components/ui/scroll-area";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { IPage } from "@/src/types/Page";
 
 interface SectionsComponentProps {
@@ -12,6 +12,8 @@ interface SectionsComponentProps {
 
 const SectionsComponent = ({ sections, pages }: SectionsComponentProps) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const sectionIndex = Number(searchParams.get("section")) || 0;
 
   const handleSectionClick = (sectionIndex: number) => {
     // Calculate page index for this section
@@ -34,7 +36,9 @@ const SectionsComponent = ({ sections, pages }: SectionsComponentProps) => {
           {sections.map((section, index) => (
             <Card
               key={section.id}
-              className="flex items-center gap-4 p-4 cursor-pointer hover:bg-gray-50"
+              className={`flex items-center gap-4 p-4 cursor-pointer  hover:bg-gray-50 ${
+                index === sectionIndex && "bg-gray-100"
+              }`}
               onClick={() => handleSectionClick(index)}
             >
               <div className="h-[100px] w-[100px] relative rounded-lg overflow-hidden bg-background">

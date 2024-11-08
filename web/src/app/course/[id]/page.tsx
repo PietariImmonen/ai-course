@@ -6,6 +6,7 @@ import { useCourseStore } from "@/src/stores/course-store";
 import TheoryPage from "@/src/sections/pages/theory/theory-page";
 import QuestionPage from "@/src/sections/pages/question/question-page";
 import LoadingScreen from "@/src/components/loaders/loading-screen";
+import FillGapPage from "@/src/sections/pages/fill-gap/fill-gap-page";
 
 const Page = () => {
   const { id } = useParams();
@@ -99,6 +100,13 @@ const Page = () => {
     <div className="p-6">
       {currentPage.type === "QUESTION" ? (
         <QuestionPage
+          page={currentPage}
+          currentPageIndex={currentPageIndex}
+          handlePrevious={handlePrevious}
+          handleNext={handleNext}
+        />
+      ) : currentPage.type === "FILL_GAP" ? (
+        <FillGapPage
           page={currentPage}
           currentPageIndex={currentPageIndex}
           handlePrevious={handlePrevious}
