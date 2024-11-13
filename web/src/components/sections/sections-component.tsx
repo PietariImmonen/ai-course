@@ -29,7 +29,7 @@ const SectionsComponent = ({ sections, pages }: SectionsComponentProps) => {
   };
 
   return (
-    <div className="w-full">
+    <div className="max-w-[450px]">
       <h3 className="text-xl font-semibold mb-4">Sections</h3>
       <ScrollArea className="h-[400px] w-full rounded-md border p-4">
         <div className="flex flex-col gap-4">
@@ -57,7 +57,11 @@ const SectionsComponent = ({ sections, pages }: SectionsComponentProps) => {
               </div>
               <CardContent className="flex-1 p-0">
                 <h3 className="text-xl font-semibold mb-2">{section.title}</h3>
-                <p className="text-sm text-gray-600">{section.description}</p>
+                <p className="text-sm text-gray-600">
+                  {section.description.length > 100
+                    ? `${section.description.slice(0, 100)}...`
+                    : section.description}
+                </p>
               </CardContent>
             </Card>
           ))}
