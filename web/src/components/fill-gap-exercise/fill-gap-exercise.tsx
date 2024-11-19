@@ -60,6 +60,7 @@ export function FillGapExercise({ prompt, variables }: FillGapExerciseProps) {
           <Input
             key={index}
             value={answers[variable] || ""}
+            placeholder={variable}
             onChange={(e) => handleInputChange(variable, e.target.value)}
             className="inline-block w-32 mx-1"
           />

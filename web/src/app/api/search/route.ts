@@ -3,8 +3,15 @@ import OpenAI from "openai";
 
 const openai = new OpenAI();
 
+export const runtime = "edge";
+
 export async function POST(request: Request) {
+  const timeoutDuration = 60000;
+
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutDuration);
+
     const { prompt } = await request.json();
 
     if (!prompt) {
@@ -21,6 +28,8 @@ export async function POST(request: Request) {
         { role: "user", content: prompt },
       ],
     });
+
+    clearTimeout(timeoutId);
 
     const response = completion.choices[0].message.content;
 
