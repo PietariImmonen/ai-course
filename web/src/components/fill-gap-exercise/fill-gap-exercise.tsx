@@ -62,7 +62,7 @@ export function FillGapExercise({ prompt, variables }: FillGapExerciseProps) {
             value={answers[variable] || ""}
             placeholder={variable}
             onChange={(e) => handleInputChange(variable, e.target.value)}
-            className="inline-block w-32 mx-1"
+            className="inline-block w-32 m-1"
           />
         );
       }

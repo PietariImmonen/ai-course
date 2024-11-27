@@ -5,6 +5,9 @@ const openai = new OpenAI();
 
 export const runtime = "edge";
 
+export const maxDuration = 60; // This function can run for a maximum of 60 seconds
+export const dynamic = "force-dynamic";
+
 export async function POST(request: Request) {
   const timeoutDuration = 60000;
 
