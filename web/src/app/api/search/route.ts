@@ -23,7 +23,7 @@ export async function POST(request: Request) {
         { status: 400 },
       );
     }
-
+    //
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
