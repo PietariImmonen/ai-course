@@ -42,7 +42,9 @@ const FillGapPage = ({
           </div>
           <div className="prose max-w-none mt-4">
             <h1 className="text-2xl font-bold mb-2">{page.title}</h1>
-            <ReactMarkdown>{page.content}</ReactMarkdown>
+            <ReactMarkdown className="prose prose-slate max-w-none space-y-4 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
+              {page.content}
+            </ReactMarkdown>
           </div>
           <Separator className="my-4" />
           <FillGapExercise

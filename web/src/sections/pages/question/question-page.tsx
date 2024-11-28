@@ -66,14 +66,18 @@ const QuestionPage = ({
           </div>
           <div className="prose max-w-none mt-4">
             <h1 className="text-2xl font-bold mb-2">{page.title}</h1>
-            <ReactMarkdown>{page.content}</ReactMarkdown>
+            <ReactMarkdown className="prose prose-slate max-w-none space-y-4 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
+              {page.content}
+            </ReactMarkdown>
           </div>
           <GPTInput onSubmit={handleSubmit} />
           {isLoading && <p>Thinking...</p>}
           {response && (
             <div className="mt-4 p-4 bg-background rounded-lg">
               <h3 className="text-lg font-semibold mb-2">Response:</h3>
-              <ReactMarkdown>{response}</ReactMarkdown>
+              <ReactMarkdown className="prose prose-slate max-w-none space-y-4 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
+                {response}
+              </ReactMarkdown>
             </div>
           )}
         </CardContent>

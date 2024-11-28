@@ -80,7 +80,9 @@ export function FillGapExercise({ prompt, variables }: FillGapExerciseProps) {
       {response && (
         <div className="mt-4 p-4 bg-background rounded-lg">
           <h3 className="text-lg font-semibold mb-2">Response:</h3>
-          <ReactMarkdown>{response}</ReactMarkdown>
+          <ReactMarkdown className="prose prose-slate max-w-none space-y-4 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
+            {response}
+          </ReactMarkdown>
         </div>
       )}
     </div>
